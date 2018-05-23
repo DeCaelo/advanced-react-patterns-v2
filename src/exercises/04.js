@@ -5,6 +5,10 @@ import {Switch} from '../switch'
 
 // we're back to basics here. Rather than compound components,
 // let's use a render prop!
+const renderSwitch = ({on, toggle}) => {
+  return <Switch on={on} onClick={toggle} />
+}
+
 class Toggle extends React.Component {
   state = {on: false}
   toggle = () =>
@@ -14,12 +18,9 @@ class Toggle extends React.Component {
         this.props.onToggle(this.state.on)
       },
     )
-  static renderSwitch({on, toggle}) {
-    // this
-    return <Switch on={on} onClick={toggle} />
-  }
+
   render() {
-    return Toggle.renderSwitch({
+    return this.props.children({
       on: this.state.on,
       toggle: this.toggle,
     })
@@ -32,20 +33,21 @@ class Toggle extends React.Component {
 function Usage({
   onToggle = (...args) => console.log('onToggle', ...args),
 }) {
-  return (
-    <Toggle onToggle={onToggle}>
-      {({on, toggle}) => (
-        <div>
-          {on ? 'The button is on' : 'The button is off'}
-          <Switch on={on} onClick={toggle} />
-          <hr />
-          <button aria-label="custom-button" onClick={toggle}>
-            {on ? 'on' : 'off'}
-          </button>
-        </div>
-      )}
-    </Toggle>
-  )
+  return <Toggle onToggle={onToggle} children={renderSwitch} />
+  // return (
+  //   <Toggle onToggle={onToggle}>
+  //     {({on, toggle}) => (
+  //       <div>
+  //         {on ? 'The button is on' : 'The button is off'}
+  //         <Switch on={on} onClick={toggle} />
+  //         <hr />
+  //         <button aria-label="custom-button" onClick={toggle}>
+  //           {on ? 'on' : 'off'}
+  //         </button>
+  //       </div>
+  //     )}
+  //   </Toggle>
+  // )
 }
 Usage.title = 'Render Props'
 
