@@ -31,15 +31,19 @@ class Toggle extends React.Component {
   state = this.initialState
   internalSetState = (changes, callback) => {
     this.setState(currentState => {
-      const changedObject =
-        typeof changes === 'function'
-          ? changes(currentState)
-          : changes
-      const reducedChanges =
-        this.props.stateReducer(currentState, changedObject) || {}
-      return Object.keys(reducedChanges).length
-        ? reducedChanges
-        : null
+      return [changes]
+        .map(c => (typeof c === 'function' ? c(currentState) : c))
+        .map(c => this.props.stateReducer(currentState, c) || {})
+        .map(c => (Object.keys(c).length ? c : null))[0]
+      // const changedObject =
+      //   typeof changes === 'function'
+      //     ? changes(currentState)
+      //     : changes
+      // const reducedChanges =
+      //   this.props.stateReducer(currentState, changedObject) || {}
+      // return Object.keys(reducedChanges).length
+      //   ? reducedChanges
+      //   : null
     }, callback)
   }
   // 🐨 let's add a method here called `internalSetState`. It will simulate
