@@ -35,11 +35,11 @@ class Toggle extends React.Component {
         typeof changes === 'function'
           ? changes(currentState)
           : changes
-      const reducedChanges = this.props.stateReducer(
-        currentState,
-        changedObject,
-      )
-      return reducedChanges
+      const reducedChanges =
+        this.props.stateReducer(currentState, changedObject) || {}
+      return Object.keys(reducedChanges).length
+        ? reducedChanges
+        : null
     }, callback)
   }
   // 🐨 let's add a method here called `internalSetState`. It will simulate
