@@ -12,6 +12,10 @@ class Toggle extends React.Component {
     onReset: () => {},
     stateReducer: (state, changes) => changes,
   }
+  static stateChangeTypes = {
+    toggle: '__toggle__',
+    reset: '__reset__',
+  }
   initialState = {on: this.props.initialOn}
   state = this.initialState
   internalSetState(changes, callback) {
@@ -34,11 +38,12 @@ class Toggle extends React.Component {
   }
   reset = () =>
     // 🐨 add a `type` string property to this call
-    this.internalSetState({type: 'reset', ...this.initialState}, () =>
-      this.props.onReset(this.state.on),
+    this.internalSetState(
+      {type: Toggle.stateChangeTypes.reset, ...this.initialState},
+      () => this.props.onReset(this.state.on),
     )
   // 🐨 accept a `type` property here and give it a default value
-  toggle = ({type = 'toggle'} = {}) =>
+  toggle = ({type = Toggle.stateChangeTypes.toggle} = {}) =>
     this.internalSetState(
       // pass the `type` string to this object
       ({on}) => ({type, on: !on}),
@@ -47,7 +52,7 @@ class Toggle extends React.Component {
   getTogglerProps = ({onClick, ...props} = {}) => ({
     // 🐨 change `this.toggle` to `() => this.toggle()`
     // to avoid passing the click event to this.toggle.
-    onClick: callAll(onClick, this.toggle),
+    onClick: callAll(onClick, () => this.toggle()),
     'aria-expanded': this.state.on,
     ...props,
   })
@@ -88,6 +93,9 @@ class Usage extends React.Component {
     if (changes.type === 'forced') {
       return changes
     }
+    // if (changes.type === Toggle.stateChangeTypes.toggle) {
+    //   return {on: false}
+    // }
     if (this.state.timesClicked >= 4) {
       return {...changes, on: false}
     }
