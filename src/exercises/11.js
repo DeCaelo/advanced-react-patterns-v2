@@ -133,9 +133,13 @@ class Toggle extends React.Component {
     // 1) 🐨 replace this line with a usage of <ToggleContext.Provider> where
     // the value is `this.state` and the children is `this.props.children`.
     //return this.props.children(this.getStateAndHelpers())
+    const ui =
+      typeof this.props.children === 'function'
+        ? this.props.children(this.state)
+        : this.props.children
     return (
       <ToggleContext.Provider value={this.state}>
-        {this.props.children}
+        {ui}
       </ToggleContext.Provider>
     )
     // NOTE: this actually breaks the render prop API. We could preserve
