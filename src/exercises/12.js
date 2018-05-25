@@ -122,19 +122,18 @@ class Toggle extends React.Component {
 }
 
 function withToggle(Component) {
-  const Wrapper = React.forwardRef((props, ref) => {
+  function Wrapper(props, ref) {
     return (
       <Toggle.Consumer>
-        {toggleUtils => (
-          <Component {...props} toggle={toggleUtils} ref={ref} />
+        {toggleContext => (
+          <Component {...props} toggle={toggleContext} ref={ref} />
         )}
       </Toggle.Consumer>
     )
-  })
+  }
   Wrapper.displayName = `withToggle(${Component.displayName ||
     Component.name})`
-  hoistNonReactStatics(Wrapper, Component)
-  return Wrapper
+  return hoistNonReactStatics(React.forwardRef(Wrapper), Component)
   // The `withToggle` function is called a "Higher Order Component"
   // It's another way to share code and allows you to statically
   // create new components to render.
